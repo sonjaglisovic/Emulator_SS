@@ -303,7 +303,7 @@ void Linker::updateAllRecords(int place, string section)
         }
     }
 }
-//solve equ
+
 void Linker::solveUndefinedSimbols()
 {
     map<string, int> defined;
@@ -437,7 +437,7 @@ void Linker::solveRelocationRecords()
                     unsigned short address = (*record)->address;
                     unsigned short number = findNthEntry((*files)->allEntries, (*record)->entryNumber);
                     unsigned short finalValue;
-                    if ((*record)->type.compare(TIP_1) == 0)
+                    if ((*record)->type.compare(TIP_1) == 0 || (*record)->type.compare(TIP_0) == 0)
                     {
                         finalValue = number;
                     }
@@ -447,11 +447,16 @@ void Linker::solveRelocationRecords()
                     }
                     short prevValue = 0;
                     prevValue |= memory[address];
-
-                    prevValue |= (memory[address + 1] << 8);
+                    if ((*record)->type.compare(TIP_0) != 0)
+                    {
+                        prevValue |= (memory[address + 1] << 8);
+                    }
                     finalValue += prevValue;
                     memory.write(finalValue & 255, address);
-                    memory.write((finalValue >> 8) & 255, address + 1);
+                    if ((*record)->type.compare(TIP_0) != 0)
+                    {
+                        memory.write((finalValue >> 8) & 255, address + 1);
+                    }
                 }
             }
         }

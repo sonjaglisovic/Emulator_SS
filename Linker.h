@@ -9,6 +9,7 @@ using namespace std;
 #define ALLOWED_VALUE 60279
 #define TIP_1 "R_16"
 #define TIP_2 "R_PC16"
+#define TIP_0 "R_8"
 
 class Linker
 {
